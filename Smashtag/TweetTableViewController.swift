@@ -9,7 +9,7 @@
 import UIKit
 import Twitter
 
-class TweetTableViewController: UITableViewController {
+class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     
     
     var tweets = [Array<Twitter.Tweet>](){
@@ -18,11 +18,26 @@ class TweetTableViewController: UITableViewController {
         }
     }
     
+    
+    @IBOutlet weak var searchTextField: UITextField!{
+        didSet{
+            searchTextField.delegate = self
+            searchTextField.text = searchText
+        }
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        searchText = textField.text
+        return true
+    }
+    
     var searchText: String?{
         didSet{
             tweets.removeAll()
             searchForTweets()
-            title = searchText
+            title = searchText!
+            print("\(searchText!)")
         }
     }
     
@@ -37,10 +52,11 @@ class TweetTableViewController: UITableViewController {
     
     private func searchForTweets(){
         if let request = twitterRequest{
+            lastTwitterRequest = request
             request.fetchTweets{ [ weak weakSelf = self ] newTweets in
                 dispatch_async(dispatch_get_main_queue()) {
                     if request == weakSelf?.lastTwitterRequest{
-                        if newTweets.isEmpty {
+                        if !newTweets.isEmpty {
                             weakSelf?.tweets.insert(newTweets, atIndex: 0)
                         }
                     }
@@ -51,8 +67,9 @@ class TweetTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchText = "#stanford"
-
+        tableView.estimatedRowHeight = tableView.rowHeight
+        tableView.rowHeight = UITableViewAutomaticDimension
+//        searchText = "#stanford"
     }
 
 
@@ -66,8 +83,7 @@ class TweetTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return tweets[section].count
-    }
-    
+    }    
     
     private struct Storyboard{
         static let TweetCellIdentifier = "Tweet"
@@ -78,8 +94,10 @@ class TweetTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier(Storyboard.TweetCellIdentifier, forIndexPath: indexPath)
         
         let tweet = tweets[indexPath.section][indexPath.row]
-        cell.textLabel?.text = tweet.text
-        cell.detailTextLabel?.text = tweet.user.name
+        
+        if let tweetCell = cell as? TweetTableViewCell{
+            tweetCell.tweet = tweet
+        }        
 
         // Configure the cell...
 
