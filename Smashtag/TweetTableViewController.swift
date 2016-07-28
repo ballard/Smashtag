@@ -42,10 +42,12 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     }
     
     private var twitterRequest: Twitter.Request?{
-        if let query = searchText where !query.isEmpty {
-            return Twitter.Request(search: query + " -filter:retweets", count: 100)
+        if lastTwitterRequest == nil{
+            if let query = searchText where !query.isEmpty {
+                return Twitter.Request(search: query + " -filter:retweets", count: 100)
+            }
         }
-        return nil
+        return lastTwitterRequest?.requestForNewer
     }
     
     var lastTwitterRequest : Twitter.Request?
@@ -60,10 +62,18 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
                             weakSelf?.tweets.insert(newTweets, atIndex: 0)
                         }
                     }
+                    weakSelf?.refreshControl?.endRefreshing()
                 }
             }
+        } else {
+            self.refreshControl?.endRefreshing()
         }
     }
+    
+    @IBAction func refresh(sender: UIRefreshControl) {
+        searchForTweets()
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +84,11 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
 
 
     // MARK: - Table view data source: UITableViewDataSource
+    
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "\(tweets.count - section)"
+    }
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -93,8 +108,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Storyboard.TweetCellIdentifier, forIndexPath: indexPath)
         
-        let tweet = tweets[indexPath.section][indexPath.row]
-        
+        let tweet = tweets[indexPath.section][indexPath.row]        
         if let tweetCell = cell as? TweetTableViewCell{
             tweetCell.tweet = tweet
         }        
