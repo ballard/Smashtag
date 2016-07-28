@@ -11,36 +11,24 @@ import Twitter
 
 class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     
-    
+    // Model
     var tweets = [Array<Twitter.Tweet>](){
         didSet{
             tableView.reloadData()
         }
     }
     
-    
-    @IBOutlet weak var searchTextField: UITextField!{
-        didSet{
-            searchTextField.delegate = self
-            searchTextField.text = searchText
-        }
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        searchText = textField.text
-        return true
-    }
-    
     var searchText: String?{
         didSet{
             tweets.removeAll()
+            lastTwitterRequest = nil
             searchForTweets()
             title = searchText!
             print("\(searchText!)")
         }
     }
     
+    // Fetching tweets
     private var twitterRequest: Twitter.Request?{
         if lastTwitterRequest == nil{
             if let query = searchText where !query.isEmpty {
@@ -50,7 +38,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         return lastTwitterRequest?.requestForNewer
     }
     
-    var lastTwitterRequest : Twitter.Request?
+    private var lastTwitterRequest : Twitter.Request?
     
     private func searchForTweets(){
         if let request = twitterRequest{
@@ -74,18 +62,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         searchForTweets()
     }
     
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.estimatedRowHeight = tableView.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
-//        searchText = "#stanford"
-    }
-
-
     // MARK: - Table view data source: UITableViewDataSource
-    
-    
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "\(tweets.count - section)"
     }
@@ -98,12 +75,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return tweets[section].count
-    }    
-    
-    private struct Storyboard{
-        static let TweetCellIdentifier = "Tweet"
     }
-
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Storyboard.TweetCellIdentifier, forIndexPath: indexPath)
@@ -117,7 +89,33 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
 
         return cell
     }
-
+    
+    //Constants
+    private struct Storyboard{
+        static let TweetCellIdentifier = "Tweet"
+    }
+    
+    //Outlets
+    @IBOutlet weak var searchTextField: UITextField!{
+        didSet{
+            searchTextField.delegate = self
+            searchTextField.text = searchText
+        }
+    }
+    
+    //Delegates
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        searchText = textField.text
+        return true
+    }
+    
+    //Lifecycles
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.estimatedRowHeight = tableView.rowHeight
+        tableView.rowHeight = UITableViewAutomaticDimension
+    }
 
     /*
     // MARK: - Navigation

@@ -7,24 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C65CBB01D4AA1AE00DBBFA0 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C65CBAF1D4AA1AE00DBBFA0 /* Twitter.framework */; };
+		2C65CBB11D4AA1AE00DBBFA0 /* Twitter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2C65CBAF1D4AA1AE00DBBFA0 /* Twitter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6EDBFE7B1D3E2BDF004E82A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDBFE7A1D3E2BDF004E82A0 /* AppDelegate.swift */; };
 		6EDBFE801D3E2BE0004E82A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6EDBFE7E1D3E2BE0004E82A0 /* Main.storyboard */; };
 		6EDBFE821D3E2BE0004E82A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6EDBFE811D3E2BE0004E82A0 /* Assets.xcassets */; };
 		6EDBFE851D3E2BE0004E82A0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6EDBFE831D3E2BE0004E82A0 /* LaunchScreen.storyboard */; };
 		6EDBFE8E1D3E2D2C004E82A0 /* TweetTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDBFE8D1D3E2D2C004E82A0 /* TweetTableViewController.swift */; };
-		6EDBFE901D3E55C1004E82A0 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EDBFE8F1D3E55C0004E82A0 /* Twitter.framework */; };
-		6EDBFE911D3E55C1004E82A0 /* Twitter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6EDBFE8F1D3E55C0004E82A0 /* Twitter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6EDEFFE51D3F6B0A00AB40EC /* TweetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDEFFE41D3F6B0A00AB40EC /* TweetTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6EDBFE921D3E55C2004E82A0 /* Embed Frameworks */ = {
+		2C65CBB21D4AA1AE00DBBFA0 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				6EDBFE911D3E55C1004E82A0 /* Twitter.framework in Embed Frameworks */,
+				2C65CBB11D4AA1AE00DBBFA0 /* Twitter.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -32,6 +32,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2C65CBAF1D4AA1AE00DBBFA0 /* Twitter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Twitter.framework; path = "/Users/ivan/Library/Developer/Xcode/DerivedData/SmashtagWorkspace-gznzcoeyslskgahkvznivjqoeocp/Build/Products/Debug-iphonesimulator/Twitter.framework"; sourceTree = "<absolute>"; };
 		6EDBFE771D3E2BDF004E82A0 /* Smashtag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Smashtag.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EDBFE7A1D3E2BDF004E82A0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6EDBFE7F1D3E2BE0004E82A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -48,7 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6EDBFE901D3E55C1004E82A0 /* Twitter.framework in Frameworks */,
+				2C65CBB01D4AA1AE00DBBFA0 /* Twitter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,6 +59,7 @@
 		6EDBFE6E1D3E2BDE004E82A0 = {
 			isa = PBXGroup;
 			children = (
+				2C65CBAF1D4AA1AE00DBBFA0 /* Twitter.framework */,
 				6EDBFE8F1D3E55C0004E82A0 /* Twitter.framework */,
 				6EDBFE791D3E2BDF004E82A0 /* Smashtag */,
 				6EDBFE781D3E2BDF004E82A0 /* Products */,
@@ -104,7 +106,7 @@
 				6EDBFE731D3E2BDF004E82A0 /* Sources */,
 				6EDBFE741D3E2BDF004E82A0 /* Frameworks */,
 				6EDBFE751D3E2BDF004E82A0 /* Resources */,
-				6EDBFE921D3E55C2004E82A0 /* Embed Frameworks */,
+				2C65CBB21D4AA1AE00DBBFA0 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
