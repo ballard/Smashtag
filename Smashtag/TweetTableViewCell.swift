@@ -25,8 +25,6 @@ class TweetTableViewCell: UITableViewCell {
         }
     }
     
-    private var currentAttributedText = NSMutableAttributedString(string: "")
-    
     private var operations = [
         "http://" : Operation.HighlightSubstring(UIColor.grayColor()),
         "https://" : Operation.HighlightSubstring(UIColor.grayColor()),
@@ -38,13 +36,15 @@ class TweetTableViewCell: UITableViewCell {
         case HighlightSubstring(UIColor)
     }
     
-    private func calculateRangeOf(symbol: String, forWord word: String, inContent content: String){
+    private func calculateRangeOf(symbol: String, forWord word: String, inContent content: String , forAttributedString attributedString: NSMutableAttributedString) -> NSMutableAttributedString? {
         if let operation = operations[symbol]{
             switch operation {
             case .HighlightSubstring (let color):
-                currentAttributedText.setAttributes([NSForegroundColorAttributeName : color], range: (content as NSString).rangeOfString(word))
+                attributedString.setAttributes([NSForegroundColorAttributeName : color], range: (content as NSString).rangeOfString(word))
+                return attributedString
             }
         }
+        return nil
     }
     
     private func updateUI(){
@@ -55,26 +55,25 @@ class TweetTableViewCell: UITableViewCell {
         
         if let tweet = self.tweet{
             let text = tweet.text.stringByReplacingOccurrencesOfString("\n", withString: " ")
-            let words = text.componentsSeparatedByString(" ")
-            currentAttributedText = NSMutableAttributedString(string: text)
-            for word in words{
+            var currentAttributedText = NSMutableAttributedString(string: text)
+            for word in text.componentsSeparatedByString(" "){
                 for (prefix, _) in operations{
                     if word.hasPrefix(prefix){
-                        calculateRangeOf(prefix, forWord:  word, inContent: text)
+                        if let attributedText = calculateRangeOf(prefix, forWord:  word, inContent: text, forAttributedString: currentAttributedText){
+                            currentAttributedText = attributedText
+                        }
                     }
                 }
             }
-            
             tweetTextLabel?.attributedText = currentAttributedText
+            
             if tweetTextLabel.text != nil{
                 for _ in tweet.media {
                     tweetTextLabel.text! += " 📷"
                 }
             }
-            
             tweetScreenNameLabel?.text = "\(tweet.user)"
             tweetScreenNameLabel?.textColor = UIColor.blueColor()
-            
             if let profileImageURL = tweet.user.profileImageURL {
                 if let imageData = NSData(contentsOfURL: profileImageURL){
                     TweetProfileImageView?.image = UIImage(data: imageData)
