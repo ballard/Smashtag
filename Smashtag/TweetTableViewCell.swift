@@ -25,6 +25,28 @@ class TweetTableViewCell: UITableViewCell {
         }
     }
     
+    private var currentAttributedText = NSMutableAttributedString(string: "")
+    
+    private var operations = [
+        "http://" : Operation.HighlightSubstring(UIColor.grayColor()),
+        "https://" : Operation.HighlightSubstring(UIColor.grayColor()),
+        "@" : Operation.HighlightSubstring(UIColor.purpleColor()),
+        "#" : Operation.HighlightSubstring(UIColor.greenColor())
+    ]
+
+    enum Operation {
+        case HighlightSubstring(UIColor)
+    }
+    
+    private func calculateRangeOf(symbol: String, forWord word: String, inContent content: String){
+        if let operation = operations[symbol]{
+            switch operation {
+            case .HighlightSubstring (let color):
+                currentAttributedText.setAttributes([NSForegroundColorAttributeName : color], range: (content as NSString).rangeOfString(word))
+            }
+        }
+    }
+    
     private func updateUI(){
         tweetTextLabel?.attributedText = nil
         tweetScreenNameLabel?.text = nil
@@ -32,7 +54,18 @@ class TweetTableViewCell: UITableViewCell {
         tweetCreatedLabel?.text = nil
         
         if let tweet = self.tweet{
-            tweetTextLabel?.text = tweet.text
+            let text = tweet.text.stringByReplacingOccurrencesOfString("\n", withString: " ")
+            let words = text.componentsSeparatedByString(" ")
+            currentAttributedText = NSMutableAttributedString(string: text)
+            for word in words{
+                for (prefix, _) in operations{
+                    if word.hasPrefix(prefix){
+                        calculateRangeOf(prefix, forWord:  word, inContent: text)
+                    }
+                }
+            }
+            
+            tweetTextLabel?.attributedText = currentAttributedText
             if tweetTextLabel.text != nil{
                 for _ in tweet.media {
                     tweetTextLabel.text! += " 📷"
@@ -40,6 +73,7 @@ class TweetTableViewCell: UITableViewCell {
             }
             
             tweetScreenNameLabel?.text = "\(tweet.user)"
+            tweetScreenNameLabel?.textColor = UIColor.blueColor()
             
             if let profileImageURL = tweet.user.profileImageURL {
                 if let imageData = NSData(contentsOfURL: profileImageURL){
