@@ -9,6 +9,14 @@
 import UIKit
 import Twitter
 
+extension NSMutableAttributedString{
+    func setMentionColor(mentions: [Mention], color: UIColor) {
+        for mention in mentions{
+            addAttribute(NSForegroundColorAttributeName, value: color, range: mention.nsrange)
+        }
+    }
+}
+
 class TweetTableViewCell: UITableViewCell {
 
     @IBOutlet weak var tweetScreenNameLabel: UILabel!
@@ -25,28 +33,6 @@ class TweetTableViewCell: UITableViewCell {
         }
     }
     
-    private var operations = [
-        "http://" : Operation.HighlightSubstring(UIColor.grayColor()),
-        "https://" : Operation.HighlightSubstring(UIColor.grayColor()),
-        "@" : Operation.HighlightSubstring(UIColor.purpleColor()),
-        "#" : Operation.HighlightSubstring(UIColor.greenColor())
-    ]
-
-    enum Operation {
-        case HighlightSubstring(UIColor)
-    }
-    
-    private func calculateRangeOf(symbol: String, forWord word: String, inContent content: String , forAttributedString attributedString: NSMutableAttributedString) -> NSMutableAttributedString? {
-        if let operation = operations[symbol]{
-            switch operation {
-            case .HighlightSubstring (let color):
-                attributedString.setAttributes([NSForegroundColorAttributeName : color], range: (content as NSString).rangeOfString(word))
-                return attributedString
-            }
-        }
-        return nil
-    }
-    
     private func updateUI(){
         tweetTextLabel?.attributedText = nil
         tweetScreenNameLabel?.text = nil
@@ -54,17 +40,11 @@ class TweetTableViewCell: UITableViewCell {
         tweetCreatedLabel?.text = nil
         
         if let tweet = self.tweet{
-            let text = tweet.text.stringByReplacingOccurrencesOfString("\n", withString: " ")
-            var currentAttributedText = NSMutableAttributedString(string: text)
-            for word in text.componentsSeparatedByString(" "){
-                for (prefix, _) in operations{
-                    if word.hasPrefix(prefix){
-                        if let attributedText = calculateRangeOf(prefix, forWord:  word, inContent: text, forAttributedString: currentAttributedText){
-                            currentAttributedText = attributedText
-                        }
-                    }
-                }
-            }
+            
+            let currentAttributedText = NSMutableAttributedString(string: tweet.text)
+            currentAttributedText.setMentionColor(tweet.urls, color: UIColor.redColor())
+            currentAttributedText.setMentionColor(tweet.hashtags, color: UIColor.greenColor())
+            currentAttributedText.setMentionColor(tweet.userMentions, color: UIColor.blueColor())
             tweetTextLabel?.attributedText = currentAttributedText
             
             if tweetTextLabel.text != nil{
@@ -73,7 +53,7 @@ class TweetTableViewCell: UITableViewCell {
                 }
             }
             tweetScreenNameLabel?.text = "\(tweet.user)"
-            tweetScreenNameLabel?.textColor = UIColor.blueColor()
+            
             if let profileImageURL = tweet.user.profileImageURL {
                 if let imageData = NSData(contentsOfURL: profileImageURL){
                     TweetProfileImageView?.image = UIImage(data: imageData)
